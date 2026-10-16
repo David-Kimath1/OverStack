@@ -1,0 +1,57 @@
+.goalform { display: flex; flex-direction: column; }
+
+.goalform__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+  margin-bottom: 6px;
+}
+
+.goalform__opt {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.goalform__input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--color-navy);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.goalform__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(244, 119, 33, 0.15);
+}
+
+.goalform__input--area { resize: vertical; min-height: 72px; }
+
+.goalform__clear {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+}
+.goalform__clear:hover { color: var(--color-primary); }
+
+.goalform__error {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(217, 63, 63, 0.08);
+  color: #D93F3F;
+  font-size: 13px;
+}

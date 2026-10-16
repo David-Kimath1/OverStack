@@ -1,0 +1,92 @@
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  height: calc(64px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+}
+
+[data-theme='dark'] .nav {
+  background: rgba(22, 34, 58, 0.92);
+  border-top-color: #22304D;
+}
+
+.nav__side {
+  display: contents;
+}
+
+.nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nav__item.is-active { color: var(--color-primary); }
+.nav__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.nav__fab {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 8px 20px rgba(244, 119, 33, 0.4);
+  transform: translateY(-14px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nav__fab:hover { transform: translateY(-16px); }
+.nav__fab:active { transform: translateY(-12px) scale(0.96); }
+.nav__fab:focus-visible {
+  outline: 3px solid rgba(244, 119, 33, 0.35);
+  outline-offset: 3px;
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 900px) {
+  .nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: 76px;
+    height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto auto;
+    align-items: center;
+    padding: 24px 0;
+    border-top: none;
+    border-right: 1px solid var(--color-border);
+    gap: 4px;
+  }
+  .nav__side { display: contents; }
+  .nav__fab { transform: none; margin: 12px auto; }
+  .nav__fab:hover { transform: scale(1.05); }
+  .nav__fab:active { transform: scale(0.96); }
+  .nav__item { padding: 10px 4px; font-size: 10px; }
+}

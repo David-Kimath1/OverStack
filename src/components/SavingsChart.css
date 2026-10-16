@@ -1,0 +1,30 @@
+.chart {
+  position: relative;
+  width: 100%;
+  height: 240px;
+}
+
+.chart__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 180px;
+  color: var(--color-muted);
+  gap: 4px;
+}
+
+.chart__empty p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.chart__empty-sub {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--color-muted) !important;
+  max-width: 260px;
+}

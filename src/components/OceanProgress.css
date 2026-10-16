@@ -1,0 +1,239 @@
+/* ============================================================
+   OceanProgress — thin glowing bar with counting percentage
+   ============================================================ */
+
+.op {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.op__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ---------- Track (clips everything inside the pill) ---------- */
+
+.op__track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(23, 36, 58, 0.07);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.op--sm .op__track { height: 4px; }
+.op--md .op__track { height: 6px; }
+.op--lg .op__track { height: 8px; }
+
+[data-theme='dark'] .op__track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Fill ---------- */
+
+.op__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #0F4E86 0%,
+    #1769AA 35%,
+    #2E87C8 70%,
+    #48A9E6 100%
+  );
+  box-shadow:
+    0 0 8px rgba(72, 169, 230, 0.55),
+    0 0 18px rgba(72, 169, 230, 0.30);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Static trailing glow — brighter toward the tip */
+.op__glow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(160, 220, 255, 0.55) 55%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  pointer-events: none;
+}
+
+/* ---------- Bobbing tip at the leading edge ---------- */
+
+.op__tip {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;         /* center on X% position */
+  margin-top: -7px;          /* center on track middle */
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #FFFFFF 0%,
+    rgba(230, 245, 255, 0.98) 30%,
+    rgba(140, 205, 245, 0.55) 55%,
+    transparent 78%
+  );
+  pointer-events: none;
+  z-index: 3;
+  animation: op-tip-bob 1.8s ease-in-out infinite;
+  will-change: transform, box-shadow, opacity;
+}
+
+.op--sm .op__tip { width: 10px; height: 10px; margin-left: -5px; margin-top: -5px; }
+.op--lg .op__tip { width: 18px; height: 18px; margin-left: -9px; margin-top: -9px; }
+
+/* Rise and fall inside the pill: top → bottom → top */
+@keyframes op-tip-bob {
+  0% {
+    transform: translateY(-3px) scale(1);
+    opacity: 0.85;
+    box-shadow:
+      0 0 6px 2px rgba(255, 255, 255, 0.85),
+      0 0 12px 4px rgba(140, 205, 245, 0.55);
+  }
+  50% {
+    transform: translateY(3px) scale(1.15);
+    opacity: 1;
+    box-shadow:
+      0 0 10px 3px rgba(255, 255, 255, 1),
+      0 0 22px 8px rgba(140, 205, 245, 0.85);
+  }
+  100% {
+    transform: translateY(-3px) scale(1);
+    opacity: 0.85;
+    box-shadow:
+      0 0 6px 2px rgba(255, 255, 255, 0.85),
+      0 0 12px 4px rgba(140, 205, 245, 0.55);
+  }
+}
+
+/* Bigger bars get a slightly bigger bob range */
+.op--lg .op__tip { animation-name: op-tip-bob-lg; }
+@keyframes op-tip-bob-lg {
+  0%, 100% { transform: translateY(-4px) scale(1);    opacity: 0.85; }
+  50%      { transform: translateY(4px)  scale(1.15); opacity: 1; }
+}
+
+.op--sm .op__tip { animation-name: op-tip-bob-sm; }
+@keyframes op-tip-bob-sm {
+  0%, 100% { transform: translateY(-2px) scale(1);    opacity: 0.85; }
+  50%      { transform: translateY(2px)  scale(1.1);  opacity: 1; }
+}
+
+.op--empty .op__tip { opacity: 0; animation: none; }
+
+/* ---------- Percentage number ---------- */
+
+.op__pct {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-navy);
+  min-width: 42px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.op--sm .op__pct { font-size: 11px; min-width: 36px; }
+.op--lg .op__pct { font-size: 15px; min-width: 48px; }
+
+/* ---------- Labels row ---------- */
+
+.op__labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-left: 2px;
+  padding-right: calc(42px + 14px);
+}
+
+.op--sm .op__labels { padding-right: calc(36px + 14px); }
+.op--lg .op__labels { padding-right: calc(48px + 14px); }
+
+.op__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Completed (green) ---------- */
+
+.op--completed .op__fill {
+  background: linear-gradient(
+    90deg,
+    #1B7A55 0%,
+    #23966A 35%,
+    #2CB57E 70%,
+    #4ECB98 100%
+  );
+  box-shadow:
+    0 0 8px rgba(35, 150, 106, 0.55),
+    0 0 18px rgba(35, 150, 106, 0.30);
+}
+
+.op--completed .op__glow {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180, 245, 215, 0.55) 55%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+}
+
+.op--completed .op__pct { color: var(--color-success); }
+
+.op--completed .op__tip {
+  background: radial-gradient(
+    circle,
+    #FFFFFF 0%,
+    rgba(220, 255, 235, 0.98) 30%,
+    rgba(120, 220, 180, 0.55) 55%,
+    transparent 78%
+  );
+  animation-name: op-tip-bob-green;
+}
+
+@keyframes op-tip-bob-green {
+  0%, 100% {
+    transform: translateY(-3px) scale(1);
+    opacity: 0.85;
+    box-shadow:
+      0 0 6px 2px rgba(255, 255, 255, 0.85),
+      0 0 12px 4px rgba(120, 220, 180, 0.55);
+  }
+  50% {
+    transform: translateY(3px) scale(1.15);
+    opacity: 1;
+    box-shadow:
+      0 0 10px 3px rgba(255, 255, 255, 1),
+      0 0 22px 8px rgba(120, 220, 180, 0.85);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .op__fill { transition: none; }
+  .op__tip { animation: none; opacity: 0.9; }
+}

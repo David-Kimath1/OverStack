@@ -1,0 +1,106 @@
+.gadmin {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.gadmin--compact {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: auto;
+  z-index: 3;
+}
+
+.gadmin__btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-navy);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.gadmin__btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.gadmin__btn--danger:hover {
+  border-color: #D93F3F;
+  color: #D93F3F;
+  background: rgba(217, 63, 63, 0.05);
+}
+
+/* ---------- Compact menu ---------- */
+
+.gadmin__menu-btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(23, 36, 58, 0.04);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.gadmin__menu-btn:hover {
+  background: rgba(23, 36, 58, 0.08);
+  color: var(--color-navy);
+}
+
+[data-theme='dark'] .gadmin__menu-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme='dark'] .gadmin__menu-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.gadmin__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 140px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  animation: gadmin-pop 0.15s ease-out;
+  z-index: 10;
+}
+
+@keyframes gadmin-pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gadmin__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-navy);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.gadmin__menu-item:hover { background: var(--color-border); }
+.gadmin__menu-item--danger { color: #D93F3F; }
+.gadmin__menu-item--danger:hover { background: rgba(217, 63, 63, 0.08); }
