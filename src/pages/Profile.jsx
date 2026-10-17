@@ -209,18 +209,12 @@ export default function Profile() {
         }
       }
 
-      // 3. Create the Monthly Savings Goal (Hidden background goal)
-      let monthlyGoal = goals.find(g => g.name === 'Monthly Savings' || g.name === 'General Savings')
-      if (!monthlyGoal) {
-        await createGoal({ name: 'Monthly Savings', targetAmount: 100000 })
-      }
-
-      // 4. Set default income
+      // 3. Set default income
       await setSetting('monthlyIncome', 24000)
 
       await refreshGoals()
       await refreshSavings()
-      setImportSuccess('System initialized! Insurance and Monthly Budget are ready.')
+      setImportSuccess('System initialized! Insurance is ready.')
       setTimeout(() => setImportSuccess(null), 3000)
     } catch (err) {
       setImportError('Failed to initialize system data.')

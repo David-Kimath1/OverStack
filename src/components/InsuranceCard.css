@@ -115,3 +115,25 @@
   pointer-events: none;
   opacity: 0.7;
 }
+
+.ins-card__progress {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ins-card__progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.ins-card__progress-row strong {
+  color: var(--color-navy);
+  font-weight: 700;
+}

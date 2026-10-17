@@ -15,7 +15,7 @@ import { useStreak } from '../hooks/useStreak'
 import { getAllSettings, setSetting } from '../storage/settingsStorage'
 import { createGoal } from '../storage/goalStorage'
 import { exportPdfReport } from '../utils/pdfExport'
-import { sumAll, sumForMonth, splitGoals } from '../utils/savingsCalculations'
+import { sumAll, sumForMonth, splitGoals, goalStats } from '../utils/savingsCalculations'
 import { formatCurrency, currencySymbol } from '../utils/currency'
 import { formatMonthOnly, todayISO } from '../utils/dateUtils'
 import './Home.css'
@@ -193,6 +193,10 @@ export default function Home() {
     return months
   }, [validSavings, monthlySavingsGoal, now, currentYear])
 
+  const insuranceStats = useMemo(() => {
+    return insuranceGoal ? goalStats(insuranceGoal, savings) : { saved: 0, target: 320427 }
+  }, [insuranceGoal, savings])
+
   const loading = goalsLoading || savingsLoading || !ready
   const tz = formatTimezone(now, locale)
   const subtitle = [formatClock(now, locale), formatFullDate(now, locale), tz].filter(Boolean).join(' · ')
@@ -312,6 +316,8 @@ export default function Home() {
           onConfirm={handleInsuranceConfirm} 
           isHidden={isHidden}
           privacyMode={effectiveMode}
+          saved={insuranceStats.saved}
+          target={insuranceStats.target}
         />
       )}
 
