@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import BottomNavigation from './components/BottomNavigation'
+import NotificationBanner from './components/NotificationBanner'
 import { useTheme } from './hooks/useTheme'
 import Home from './pages/Home'
 import Goals from './pages/Goals'
@@ -14,6 +15,7 @@ export default function App() {
 
   return (
     <HashRouter>
+      <NotificationBanner />
       <div className="app-shell">
         <main className="app-main">
           <Routes>

@@ -17,15 +17,23 @@ export async function sendTestNotification() {
     throw new Error('Notification permission denied.')
   }
 
-  // Wait for the service worker to be ready
   const registration = await navigator.serviceWorker.ready
   
+  // 1. Trigger the System Notification
   registration.showNotification('OverStack Reminder', {
     body: 'Time to check your savings goals!',
-    icon: '/icons/icon-192.png',     // The big icon
-    badge: '/icons/badge.png',       // The tiny status bar icon
+    icon: '/icons/icon-192.png',     // Large color icon
+    badge: '/icons/icon-192.png',    // Trying color for the badge slot too
     vibrate: [200, 100, 200],
     tag: 'overstack-test',
     data: { url: '/' }
   })
+
+  // 2. Trigger the In-App Slide-Down Banner
+  window.dispatchEvent(new CustomEvent('overstack-notify', {
+    detail: {
+      title: 'OverStack Reminder',
+      body: 'Time to check your savings goals!'
+    }
+  }))
 }
