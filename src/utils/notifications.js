@@ -22,8 +22,8 @@ export async function sendTestNotification() {
   // 1. Trigger the System Notification
   registration.showNotification('OverStack Reminder', {
     body: 'Time to check your savings goals!',
-    icon: '/icons/icon-192.png',     // Large color icon
-    badge: '/icons/icon-192.png',    // Trying color for the badge slot too
+    icon: '/icons/notification-192.png', // Transparent logo for the panel
+    badge: '/icons/badge.png',           // White silhouette for the status bar (Android requirement)
     vibrate: [200, 100, 200],
     tag: 'overstack-test',
     data: { url: '/' }
