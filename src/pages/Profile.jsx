@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  User, Sun, Moon, Monitor, Target, Flame, Download, Upload,
-  Trash2, Save, Check, AlertCircle, FileText,
+    User, Sun, Moon, Monitor, Target, Flame, Download, Upload,
+  Trash2, Save, Check, AlertCircle, FileText, Bell,
 } from 'lucide-react'
 import AppHeader from '../components/AppHeader'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -14,6 +14,8 @@ import { exportPdfReport } from '../utils/pdfExport'
 import { useGoals } from '../hooks/useGoals'
 import { useSavings } from '../hooks/useSavings'
 import './Profile.css'
+import { requestNotificationPermission, sendTestNotification } from '../utils/notifications'
+
 
 const THEMES = [
   { id: 'light', label: 'Light', icon: Sun },
@@ -241,6 +243,28 @@ export default function Profile() {
         </div>
       </section>
 
+      <section className="prof__card">
+        <p className="prof__eyebrow">
+          <Bell size={13} /> NOTIFICATIONS
+        </p>
+        <p className="prof__data-note">
+          Test your browser's local notification system. (Requires permission).
+        </p>
+        <button 
+          className="btn btn--primary" 
+          style={{ width: '100%', justifyContent: 'center' }}
+          onClick={async () => {
+            try {
+              await requestNotificationPermission()
+              await sendTestNotification()
+            } catch (err) {
+              alert(err.message)
+            }
+          }}
+        >
+          <Bell size={16} /> Send Test Notification
+        </button>
+      </section>
       <section className="prof__card">
         <p className="prof__eyebrow">
           <Flame size={13} /> STREAK
