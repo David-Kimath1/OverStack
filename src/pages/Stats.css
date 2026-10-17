@@ -4,7 +4,7 @@
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .stats__tab {
@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   padding: 10px;
   border-radius: 8px;
   border: none;
@@ -40,15 +40,16 @@
 }
 
 .stats__title {
-  margin: 0 0 20px;
-  font-size: 16px;
+  margin: 0 0 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-navy);
 }
 
 .stats__chart-wrap {
-  height: 300px;
+  height: 280px;
   position: relative;
+  width: 100%;
 }
 
 .stats__loading {
@@ -59,10 +60,26 @@
   font-size: 13px;
 }
 
-/* Mobile Tweaks for Stats */
+/* Mobile Adjustments */
 @media (max-width: 480px) {
-  .stats__tabs { margin-bottom: 16px; }
-  .stats__tab { padding: 8px; font-size: 12px; }
-  .stats__card { padding: 16px; }
-  .stats__chart-wrap { height: 220px; }
+  .stats__tabs {
+    margin-bottom: 16px;
+    padding: 3px;
+  }
+  .stats__tab {
+    padding: 8px;
+    font-size: 12px;
+    gap: 4px;
+  }
+  .stats__card {
+    padding: 16px 12px; /* Tighter padding for the card */
+  }
+  .stats__title {
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .stats__chart-wrap {
+    height: 240px; /* Shorter chart on mobile */
+  }
 }

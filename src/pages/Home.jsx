@@ -205,10 +205,10 @@ export default function Home() {
   async function handleInsuranceConfirm() {
     let targetGoalId = insuranceGoal?.id
     if (!targetGoalId) {
-      const newGoal = await createGoal({ name: 'Insurance Fund', targetAmount: 36000 })
+      const newGoal = await createGoal({ name: 'Insurance Fund', targetAmount: 320427 })
       targetGoalId = newGoal.id
     }
-    await addSaving({ goalId: targetGoalId, amount: 3000, date: todayISO(), note: 'Insurance auto-deduction' })
+    await addSaving({ goalId: targetGoalId, amount: 3008, date: todayISO(), note: 'Insurance auto-deduction' })
     await refreshGoals()
   }
 
@@ -306,7 +306,7 @@ export default function Home() {
 
       {!loading && (
         <InsuranceCard 
-          amount={3000} 
+          amount={3008} 
           isPaid={isInsurancePaid} 
           currency={settings.currency} 
           onConfirm={handleInsuranceConfirm} 

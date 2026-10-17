@@ -5,7 +5,7 @@ import { triggerSaveFeedback } from '../utils/feedback'
 import './InsuranceCard.css'
 
 export default function InsuranceCard({ 
-  amount = 3000, 
+  amount = 3008, 
   isPaid = false, 
   currency = 'KSh', 
   onConfirm,

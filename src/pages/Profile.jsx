@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   User, Sun, Moon, Monitor, Target, Flame, Download, Upload,
-  Trash2, Save, Check, AlertCircle, FileText, EyeOff, Bell, Fingerprint, History
+  Trash2, Save, Check, AlertCircle, FileText, EyeOff, Bell, Fingerprint, History, Smartphone
 } from 'lucide-react'
 import AppHeader from '../components/AppHeader'
 import ConfirmDialog from '../components/ConfirmDialog'
 import Modal from '../components/Modal'
 import { getAllSettings, setSetting } from '../storage/settingsStorage'
 import { exportAllData, importAllData, validateImport, deleteAllData } from '../storage/exportImport'
+import { createGoal } from '../storage/goalStorage'
+import { createSaving } from '../storage/savingsStorage'
 import { SUPPORTED_CURRENCIES, currencySymbol, formatThousands } from '../utils/currency'
 import { applyTheme } from '../utils/themeApplier'
 import { exportPdfReport } from '../utils/pdfExport'
@@ -45,12 +47,11 @@ export default function Profile() {
   const [importError, setImportError] = useState(null)
   const [importSuccess, setImportSuccess] = useState(null)
 
-  // New state for the Biometrics Error Modal
   const [bioErrorOpen, setBioErrorOpen] = useState(false)
   const [bioErrorMsg, setBioErrorMsg] = useState('')
 
-  const { goals } = useGoals()
-  const { savings } = useSavings()
+  const { goals, refresh: refreshGoals } = useGoals()
+  const { savings, refresh: refreshSavings } = useSavings()
   const { isEnabled, enableBiometrics, disableBiometrics } = useBiometrics()
 
   const fileRef = useRef(null)
@@ -136,7 +137,6 @@ export default function Profile() {
     } else {
       const success = await enableBiometrics()
       if (!success) {
-        // Show the beautiful modal instead of an alert
         setBioErrorMsg("Biometrics are not supported on this device or browser, or the prompt was cancelled. Please ensure you have a fingerprint/FaceID scanner set up.")
         setBioErrorOpen(true)
       }
@@ -173,14 +173,58 @@ export default function Profile() {
       const data = JSON.parse(text)
       const err = validateImport(data)
       if (err) throw new Error(err)
+      
+      // Replace entire database with the new file
       await importAllData(data, { replace: true })
-      setImportSuccess('Data imported successfully.')
-      setTimeout(() => window.location.reload(), 900)
+      setImportSuccess('Data imported successfully! Reloading...')
+      setTimeout(() => window.location.reload(), 1200)
     } catch (err) { setImportError(err.message || 'Import failed.') } finally { if (fileRef.current) fileRef.current.value = '' }
   }
 
   async function handleDeleteAll() {
     await deleteAllData(); setDeleteOpen(false); navigate('/'); setTimeout(() => window.location.reload(), 300)
+  }
+
+  // --- SYSTEM INITIALIZER ---
+  async function handleInitializeSystem() {
+    try {
+      // 1. Create the Insurance Goal
+      let insGoal = goals.find(g => g.name.toLowerCase().includes('insurance'))
+      if (!insGoal) {
+        insGoal = await createGoal({ name: 'Insurance Fund', targetAmount: 320427 })
+      }
+      
+      // 2. Add the 3 past payments
+      const year = new Date().getFullYear()
+      const pastMonths = [`${year}-08-01`, `${year}-09-01`, `${year}-10-01`]
+      for (const dateStr of pastMonths) {
+        const exists = savings.some(s => s.goalId === insGoal.id && s.date === dateStr)
+        if (!exists) {
+          await createSaving({ 
+            goalId: insGoal.id, 
+            amount: 3008, 
+            date: dateStr, 
+            note: 'Insurance auto-deduction' 
+          })
+        }
+      }
+
+      // 3. Create the Monthly Savings Goal (Hidden background goal)
+      let monthlyGoal = goals.find(g => g.name === 'Monthly Savings' || g.name === 'General Savings')
+      if (!monthlyGoal) {
+        await createGoal({ name: 'Monthly Savings', targetAmount: 100000 })
+      }
+
+      // 4. Set default income
+      await setSetting('monthlyIncome', 24000)
+
+      await refreshGoals()
+      await refreshSavings()
+      setImportSuccess('System initialized! Insurance and Monthly Budget are ready.')
+      setTimeout(() => setImportSuccess(null), 3000)
+    } catch (err) {
+      setImportError('Failed to initialize system data.')
+    }
   }
 
   if (!ready) return <><AppHeader title="Profile" /><p className="prof__loading">Loading…</p></>
@@ -273,13 +317,34 @@ export default function Profile() {
       </section>
 
       <section className="prof__card">
-        <p className="prof__eyebrow"><Target size={13} /> DATA</p>
-        <p className="prof__data-note">Your data is stored locally in this browser. Export a backup regularly.</p>
+        <p className="prof__eyebrow"><Target size={13} /> DATA & SYNC</p>
+        
+        <div style={{ background: 'rgba(72, 169, 230, 0.1)', padding: '12px', borderRadius: '10px', marginBottom: '16px', border: '1px solid rgba(72, 169, 230, 0.2)' }}>
+          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 'bold', color: 'var(--color-ocean-deep)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Smartphone size={14} /> How to sync Laptop & Phone
+          </p>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-muted)', lineHeight: 1.4 }}>
+            1. Click <strong>Export Data</strong> on this device.<br/>
+            2. Send the `.json` file to yourself (WhatsApp/Email).<br/>
+            3. Open OverStack on the other device and click <strong>Import Data</strong>.
+          </p>
+        </div>
+
+        {/* SYSTEM INITIALIZER BUTTON */}
+        <button className="prof__data-btn prof__data-btn--glow" onClick={handleInitializeSystem} style={{ marginBottom: "12px" }}>
+          <div className="init-loader"><div className="circle"><div className="dot"></div><div className="outline"></div></div></div>
+          <span>
+            <strong style={{ color: 'var(--color-primary)' }}>Initialize Base System Data</strong>
+            <em>Sets up Insurance & Monthly Savings</em>
+          </span>
+        </button>
+
         <div className="prof__data-actions">
-          <button className="prof__data-btn" onClick={handleExportPdf} disabled={pdfLoading}><FileText size={16} /><span><strong>{pdfLoading ? 'Generating PDF…' : 'Export PDF report'}</strong><em>A formatted savings summary, ready to print</em></span></button>
-          <button className="prof__data-btn" onClick={handleExport}><Download size={16} /><span><strong>Export data</strong><em>Download a JSON backup</em></span></button>
-          <button className="prof__data-btn" onClick={handleImportClick}><Upload size={16} /><span><strong>Import data</strong><em>Restore from a backup file</em></span></button>
+          <button className="prof__data-btn" onClick={handleExport}><Download size={16} /><span><strong>Export Data (JSON)</strong><em>Download a backup or sync file</em></span></button>
+          <button className="prof__data-btn" onClick={handleImportClick}><Upload size={16} /><span><strong>Import Data (JSON)</strong><em>Restore or sync from a file</em></span></button>
           <input ref={fileRef} type="file" accept="application/json,.json" style={{ display: 'none' }} onChange={handleImportFile} />
+          
+          <button className="prof__data-btn" onClick={handleExportPdf} disabled={pdfLoading}><FileText size={16} /><span><strong>{pdfLoading ? 'Generating PDF…' : 'Export PDF report'}</strong><em>A formatted savings summary, ready to print</em></span></button>
           <button className="prof__data-btn prof__data-btn--danger" onClick={() => setDeleteOpen(true)}><Trash2 size={16} /><span><strong>Delete all data</strong><em>Permanently erase everything</em></span></button>
         </div>
         {importSuccess && <p className="prof__msg prof__msg--ok"><Check size={14} /> {importSuccess}</p>}
@@ -292,16 +357,11 @@ export default function Profile() {
         <button className="btn btn--primary prof__save" onClick={saveProfile}><Save size={16} /> Save changes</button>
       </div>
 
-      {/* Biometrics Error Modal */}
       <Modal
         open={bioErrorOpen}
         onClose={() => setBioErrorOpen(false)}
         title="Biometrics Unavailable"
-        footer={
-          <button className="btn btn--primary" onClick={() => setBioErrorOpen(false)}>
-            Okay
-          </button>
-        }
+        footer={<button className="btn btn--primary" onClick={() => setBioErrorOpen(false)}>Okay</button>}
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px', padding: '10px 0' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(217, 63, 63, 0.1)', color: '#D93F3F', display: 'grid', placeItems: 'center' }}>

@@ -265,3 +265,140 @@ select.prof__input { cursor: pointer; }
   .prof__data-btn strong { font-size: 13px; }
   .prof__data-btn em { font-size: 11px; }
 }
+
+/* Make themes 2x2 grid on mobile */
+@media (max-width: 480px) {
+  .prof__themes {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .prof__data-btn {
+    padding: 12px;
+  }
+  .prof__data-btn strong {
+    font-size: 13px;
+  }
+  .prof__data-btn em {
+    font-size: 11px;
+  }
+  .prof__card {
+    padding: 16px;
+  }
+}
+
+/* Glowing Error Circle */
+.glow-circle-error {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(217, 63, 63, 0.1);
+  color: #D93F3F;
+  display: grid;
+  place-items: center;
+  animation: glow-pulse-red 2s infinite;
+}
+
+@keyframes glow-pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(217, 63, 63, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px rgba(217, 63, 63, 0);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 63, 63, 0);
+    transform: scale(1);
+  }
+}
+
+/* Glowing Initialize Button */
+.prof__data-btn--glow {
+  border-color: var(--color-primary) !important;
+  animation: button-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes button-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 119, 33, 0.4);
+    border-color: rgba(244, 119, 33, 0.5) !important;
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(244, 119, 33, 0.2);
+    border-color: var(--color-primary) !important;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 119, 33, 0);
+    border-color: rgba(244, 119, 33, 0.5) !important;
+  }
+}
+
+/* --- Uiverse Glowing Icon Animation --- */
+.init-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --color: var(--color-primary);
+  --animation: 2s ease-in-out infinite;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.init-loader .circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: solid 2px var(--color);
+  border-radius: 50%;
+  background-color: transparent;
+  animation: circle-keys var(--animation);
+}
+
+.init-loader .circle .dot {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background-color: var(--color);
+  animation: dot-keys var(--animation);
+}
+
+.init-loader .circle .outline {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: outline-keys var(--animation);
+}
+
+@keyframes circle-keys {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes dot-keys {
+  0% { transform: scale(1); }
+  50% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes outline-keys {
+  0% {
+    transform: scale(0);
+    outline: solid 16px var(--color);
+    outline-offset: 0;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    outline: solid 0 transparent;
+    outline-offset: 16px;
+    opacity: 0;
+  }
+}

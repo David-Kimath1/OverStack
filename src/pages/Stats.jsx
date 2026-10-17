@@ -33,10 +33,8 @@ export default function Stats() {
     getSetting('currency').then((c) => setCurrency(c || 'KSh'))
   }, [])
 
-  const insuranceGoal = goals.find(g => g.name.toLowerCase().includes('insurance'))
   const monthlySavingsGoal = goals.find(g => g.name === 'Monthly Savings' || g.name === 'General Savings')
 
-  // Filter ONLY the Monthly Savings for the chart to match the Home screen
   const monthlyBudgetSavings = useMemo(() => {
     return savings.filter(s => s.goalId === monthlySavingsGoal?.id)
   }, [savings, monthlySavingsGoal])
@@ -72,14 +70,14 @@ export default function Stats() {
         data: chartData.data,
         borderColor: '#2E87C8',
         backgroundColor: 'rgba(72, 169, 230, 0.15)',
-        borderWidth: 3,
+        borderWidth: 2.5,
         tension: 0.4,
         fill: true,
         pointBackgroundColor: '#FFFFFF',
         pointBorderColor: '#2E87C8',
-        pointBorderWidth: 2.5,
-        pointRadius: 5,
-        pointHoverRadius: 7,
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
       },
     ],
   }
@@ -87,11 +85,14 @@ export default function Stats() {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: { left: 0, right: 10, top: 10 } // Added right padding for breathing room
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
         backgroundColor: '#17243A',
-        padding: 12,
+        padding: 10,
         cornerRadius: 8,
         displayColors: false,
         callbacks: {
@@ -102,13 +103,21 @@ export default function Stats() {
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: '#8491A5' },
+        ticks: { 
+          color: '#8491A5',
+          font: { size: 10 }, // Smaller font for mobile
+          maxRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 6 // Prevents labels from bunching up
+        },
         border: { display: false },
       },
       y: {
         grid: { color: 'rgba(132, 145, 165, 0.1)' },
         ticks: {
           color: '#8491A5',
+          font: { size: 10 }, // Smaller font for mobile
+          maxTicksLimit: 5,
           callback: (v) => {
             if (v >= 1000) return `${currency} ${(v / 1000).toFixed(0)}k`
             return `${currency} ${v}`
@@ -121,20 +130,20 @@ export default function Stats() {
 
   return (
     <>
-      <AppHeader title="Statistics" subtitle="Your monthly budget savings over time" />
+      <AppHeader title="Statistics" subtitle="Monthly budget savings over time" />
 
       <div className="stats__tabs">
         <button
           className={'stats__tab' + (view === 'monthly' ? ' is-active' : '')}
           onClick={() => setView('monthly')}
         >
-          <Calendar size={16} /> Monthly
+          <Calendar size={14} /> Monthly
         </button>
         <button
           className={'stats__tab' + (view === 'yearly' ? ' is-active' : '')}
           onClick={() => setView('yearly')}
         >
-          <TrendingUp size={16} /> Yearly
+          <TrendingUp size={14} /> Yearly
         </button>
       </div>
 

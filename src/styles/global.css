@@ -113,3 +113,11 @@ img, svg, video, canvas { max-width: 100%; height: auto; }
   .home__total-value { font-size: 26px; }
   .app-main { padding-top: 12px; }
 }
+
+/* Global Mobile Overrides */
+@media (max-width: 480px) {
+  .app-main {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
