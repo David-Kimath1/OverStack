@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Target, Plus, History, User } from 'lucide-react'
+import { Home, Target, Plus, BarChart3, User } from 'lucide-react'
 import './BottomNavigation.css'
 
 const LEFT = [
@@ -7,7 +7,7 @@ const LEFT = [
   { to: '/goals',   icon: Target,  label: 'Goals' },
 ]
 const RIGHT = [
-  { to: '/history', icon: History, label: 'History' },
+  { to: '/stats',   icon: BarChart3, label: 'Stats' },
   { to: '/profile', icon: User,    label: 'Profile' },
 ]
 

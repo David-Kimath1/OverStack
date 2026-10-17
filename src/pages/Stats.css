@@ -1,0 +1,68 @@
+.stats__tabs {
+  display: flex;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.stats__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stats__tab.is-active {
+  background: var(--color-bg);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.stats__card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stats__title {
+  margin: 0 0 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.stats__chart-wrap {
+  height: 300px;
+  position: relative;
+}
+
+.stats__loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+/* Mobile Tweaks for Stats */
+@media (max-width: 480px) {
+  .stats__tabs { margin-bottom: 16px; }
+  .stats__tab { padding: 8px; font-size: 12px; }
+  .stats__card { padding: 16px; }
+  .stats__chart-wrap { height: 220px; }
+}

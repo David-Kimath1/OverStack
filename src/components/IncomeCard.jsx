@@ -9,11 +9,16 @@ export default function IncomeCard({
   monthlyTarget = 20000,
   currency = 'KSh',
   onSaveIncome,
+  onEditSaving,
   monthLabel,
 }) {
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(income ? String(income) : '')
-  const [saving, setSaving] = useState(false)
+  const [editingIncome, setEditingIncome] = useState(false)
+  const [incomeDraft, setIncomeDraft] = useState(income ? String(income) : '')
+  const [savingIncome, setSavingIncome] = useState(false)
+
+  const [editingSaved, setEditingSaved] = useState(false)
+  const [savedDraft, setSavedDraft] = useState(savedThisMonth ? String(savedThisMonth) : '')
+  const [savingQuick, setSavingQuick] = useState(false)
 
   const remaining = income - savedThisMonth
   const hasIncome = income > 0
@@ -21,21 +26,28 @@ export default function IncomeCard({
   const savedPctOfIncome = hasIncome ? (savedThisMonth / income) * 100 : 0
   const targetPctOfIncome = hasIncome ? (monthlyTarget / income) * 100 : 0
 
-  async function commit() {
-    const v = parseAmount(draft)
+  async function commitIncome() {
+    const v = parseAmount(incomeDraft)
     if (!Number.isFinite(v) || v < 0) return
-    setSaving(true)
+    setSavingIncome(true)
     try {
       await onSaveIncome?.(v)
-      setEditing(false)
+      setEditingIncome(false)
     } finally {
-      setSaving(false)
+      setSavingIncome(false)
     }
   }
 
-  function cancel() {
-    setDraft(income ? String(income) : '')
-    setEditing(false)
+  async function commitSaved() {
+    const v = parseAmount(savedDraft)
+    if (!Number.isFinite(v) || v < 0) return
+    setSavingQuick(true)
+    try {
+      await onEditSaving?.(v)
+      setEditingSaved(false)
+    } finally {
+      setSavingQuick(false)
+    }
   }
 
   return (
@@ -44,15 +56,15 @@ export default function IncomeCard({
         <p className="inc__eyebrow">
           <Wallet size={13} /> MONTHLY BUDGET
         </p>
-        {!editing && (
-          <button type="button" className="inc__edit" onClick={() => setEditing(true)} aria-label="Edit income">
+        {!editingIncome && (
+          <button type="button" className="inc__edit" onClick={() => setEditingIncome(true)} aria-label="Edit income">
             <Pencil size={12} />
             {hasIncome ? 'Edit income' : 'Set income'}
           </button>
         )}
       </header>
 
-      {editing ? (
+      {editingIncome ? (
         <div className="inc__editor">
           <label className="inc__label">MONTHLY INCOME ({currency})</label>
           <div className="inc__input-row">
@@ -62,22 +74,22 @@ export default function IncomeCard({
               inputMode="decimal"
               autoFocus
               placeholder="0"
-              value={formatThousands(draft)}
+              value={formatThousands(incomeDraft)}
               onChange={(e) => {
                 const v = e.target.value.replace(/,/g, '')
-                if (/^\d*\.?\d{0,2}$/.test(v)) setDraft(v)
+                if (/^\d*\.?\d{0,2}$/.test(v)) setIncomeDraft(v)
               }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') commit()
-                if (e.key === 'Escape') cancel()
+                if (e.key === 'Enter') commitIncome()
+                if (e.key === 'Escape') setEditingIncome(false)
               }}
             />
           </div>
           <div className="inc__actions">
-            <button type="button" className="inc__btn inc__btn--ghost" onClick={cancel} disabled={saving}>
+            <button type="button" className="inc__btn inc__btn--ghost" onClick={() => setEditingIncome(false)} disabled={savingIncome}>
               <X size={14} /> Cancel
             </button>
-            <button type="button" className="inc__btn inc__btn--primary" onClick={commit} disabled={saving}>
+            <button type="button" className="inc__btn inc__btn--primary" onClick={commitIncome} disabled={savingIncome}>
               <Check size={14} /> Save
             </button>
           </div>
@@ -93,9 +105,37 @@ export default function IncomeCard({
 
           <div className="inc__row">
             <span className="inc__row-label">Saved {monthLabel ? `in ${monthLabel}` : ''}</span>
-            <span className="inc__row-value inc__row-value--minus">
-              −{formatCurrency(savedThisMonth, currency)}
-            </span>
+            
+            {editingSaved ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="inc__prefix" style={{ fontSize: '15px', color: 'var(--color-ocean-deep)' }}>−{currency}</span>
+                <input
+                  className="inc__quick-input"
+                  style={{ width: '80px', textAlign: 'right', background: 'transparent', border: 'none', color: 'var(--color-ocean-deep)', fontSize: '15px', fontWeight: 'bold' }}
+                  inputMode="decimal"
+                  autoFocus
+                  value={formatThousands(savedDraft)}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/,/g, '')
+                    if (/^\d*\.?\d{0,2}$/.test(v)) setSavedDraft(v)
+                  }}
+                  onBlur={commitSaved}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.target.blur()
+                    if (e.key === 'Escape') { setEditingSaved(false); setSavedDraft(String(savedThisMonth)) }
+                  }}
+                />
+              </div>
+            ) : (
+              <span 
+                className="inc__row-value inc__row-value--minus" 
+                onClick={() => { setEditingSaved(true); setSavedDraft(String(savedThisMonth)) }}
+                style={{ cursor: 'pointer', borderBottom: '1px dashed rgba(72, 169, 230, 0.5)', paddingBottom: '2px' }}
+                title="Click to edit monthly total"
+              >
+                −{formatCurrency(savedThisMonth, currency)}
+              </span>
+            )}
           </div>
 
           <div className={'inc__row inc__row--remaining' + (overBudget ? ' is-over' : '')}>

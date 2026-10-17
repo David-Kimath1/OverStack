@@ -246,3 +246,24 @@
   .hist__row-amount { grid-column: 1; justify-self: start; }
   .hist__row-actions { grid-column: 2; }
 }
+
+/* Fix native select dropdown background and options */
+.hist__filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--color-navy);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding-right: 16px;
+}
+
+.hist__filter select option {
+  background: var(--color-card);
+  color: var(--color-navy);
+  padding: 8px;
+}

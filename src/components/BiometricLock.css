@@ -1,0 +1,67 @@
+.bio-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-bg);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.bio-lock__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  max-width: 320px;
+}
+
+.bio-lock__icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(244, 119, 33, 0.1);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.bio-lock__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+
+.bio-lock__sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.bio-lock__btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(244, 119, 33, 0.3);
+  transition: all 0.2s ease;
+}
+
+.bio-lock__btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 24px rgba(244, 119, 33, 0.4);
+}

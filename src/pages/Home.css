@@ -21,6 +21,43 @@
   pointer-events: none;
 }
 
+/* ---------- Privacy Eye ---------- */
+.home__total-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.home__privacy-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.home__privacy-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.home__total-value.is-blurred {
+  filter: blur(10px);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ---------- Total Card ---------- */
 .home__total-label {
   margin: 0;
   font-size: 11px;
@@ -35,12 +72,16 @@
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  position: relative;
+  z-index: 2;
 }
 
 .home__total-sub {
   margin: 0;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.75);
+  position: relative;
+  z-index: 2;
 }
 
 .home__section { margin-bottom: 26px; }
@@ -69,11 +110,9 @@
   color: var(--color-ocean-deep);
   text-decoration: none;
 }
-
 .home__more:hover { color: var(--color-primary); }
 
 /* ---------- Active goal card ---------- */
-
 .home__active {
   background: var(--color-card);
   border-radius: var(--radius-lg);
@@ -134,7 +173,6 @@
 }
 
 /* ---------- Streak ---------- */
-
 .home__streak {
   display: flex;
   align-items: center;
@@ -145,9 +183,20 @@
   padding: 14px 18px;
   margin-bottom: 26px;
   box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.home__streak:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(244, 119, 33, 0.25);
 }
 
 .home__streak-icon {
+  position: relative;
   display: grid;
   place-items: center;
   width: 42px;
@@ -156,9 +205,41 @@
   background: rgba(244, 119, 33, 0.12);
   color: var(--color-primary);
   flex-shrink: 0;
+  animation: flame-flicker 1.6s ease-in-out infinite;
+  transform-origin: 50% 80%;
+  filter: drop-shadow(0 0 6px rgba(244, 119, 33, 0.55));
 }
 
-.home__streak-text { display: flex; flex-direction: column; gap: 2px; }
+.home__streak-icon::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(244, 119, 33, 0.35) 0%,
+    rgba(244, 119, 33, 0.15) 45%,
+    transparent 75%
+  );
+  animation: flame-glow 1.6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes flame-flicker {
+  0% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 5px rgba(244, 119, 33, 0.5)); }
+  22% { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 9px rgba(244, 119, 33, 0.9)); }
+  45% { transform: scale(0.96) rotate(-1deg); filter: drop-shadow(0 0 6px rgba(244, 119, 33, 0.65)); }
+  68% { transform: scale(1.05) rotate(1.5deg); filter: drop-shadow(0 0 10px rgba(244, 119, 33, 1)); }
+  100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 5px rgba(244, 119, 33, 0.5)); }
+}
+
+@keyframes flame-glow {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.home__streak-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 
 .home__streak-num {
   margin: 0;
@@ -173,8 +254,14 @@
   color: var(--color-muted);
 }
 
-/* ---------- Goals grid ---------- */
+.home__streak-arrow {
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
 
+.home__streak:hover .home__streak-arrow { color: var(--color-primary); }
+
+/* ---------- Goals grid ---------- */
 .home__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -197,7 +284,6 @@
 }
 
 /* ---------- Monthly summary ---------- */
-
 .home__month {
   background: var(--color-card);
   border-radius: var(--radius-lg);
@@ -242,15 +328,96 @@
   color: var(--color-muted);
 }
 
-/* ---------- Desktop adjustments ---------- */
+/* ---------- Monthly Breakdown ---------- */
+.home__month-breakdown {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px dashed var(--color-border);
+  scrollbar-width: none;
+}
+.home__month-breakdown::-webkit-scrollbar { display: none; }
 
-@media (min-width: 900px) {
-  .home__total { padding: 32px 30px; }
-  .home__total-value { font-size: 40px; }
-  .home__active { padding: 24px; }
-  .home__month { padding: 24px; }
+.home__mb-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 10px 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  gap: 4px;
 }
 
+.home__mb-card.is-current {
+  background: rgba(72, 169, 230, 0.1);
+  border-color: rgba(72, 169, 230, 0.3);
+}
+
+.home__mb-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.home__mb-card.is-current .home__mb-label { color: var(--color-ocean-deep); }
+
+.home__mb-amount {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-navy);
+}
+
+/* ---------- Past Years ---------- */
+.home__past-years {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.home__past-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.home__past-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(72, 169, 230, 0.1);
+  color: var(--color-ocean-deep);
+}
+
+.home__past-year {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.home__past-amount {
+  margin: 2px 0 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-navy);
+}
+
+/* ---------- Export button ---------- */
 .home__export-btn {
   display: grid;
   place-items: center;
@@ -263,121 +430,34 @@
   cursor: pointer;
   transition: all 0.15s ease;
 }
+
 .home__export-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
+
 .home__export-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.home__streak {
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.home__streak:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(244, 119, 33, 0.25);
-}
-
-.home__streak-arrow {
-  color: var(--color-muted);
-  flex-shrink: 0;
-}
-
-.home__streak:hover .home__streak-arrow { color: var(--color-primary); }
-
-/* ---------- Animated flame ---------- */
-
-.home__streak-icon {
-  position: relative;
-  animation: flame-flicker 1.6s ease-in-out infinite;
-  transform-origin: 50% 80%;
-  color: var(--color-primary);
-  filter: drop-shadow(0 0 6px rgba(244, 119, 33, 0.55));
-}
-
-.home__streak-icon::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(244, 119, 33, 0.35) 0%,
-    rgba(244, 119, 33, 0.15) 45%,
-    transparent 75%
-  );
-  animation: flame-glow 1.6s ease-in-out infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-
-@keyframes flame-flicker {
-  0% {
-    transform: scale(1) rotate(-2deg);
-    filter: drop-shadow(0 0 5px rgba(244, 119, 33, 0.5));
-  }
-  22% {
-    transform: scale(1.08) rotate(2deg);
-    filter: drop-shadow(0 0 9px rgba(244, 119, 33, 0.9));
-  }
-  45% {
-    transform: scale(0.96) rotate(-1deg);
-    filter: drop-shadow(0 0 6px rgba(244, 119, 33, 0.65));
-  }
-  68% {
-    transform: scale(1.05) rotate(1.5deg);
-    filter: drop-shadow(0 0 10px rgba(244, 119, 33, 1));
-  }
-  100% {
-    transform: scale(1) rotate(-2deg);
-    filter: drop-shadow(0 0 5px rgba(244, 119, 33, 0.5));
-  }
-}
-
-@keyframes flame-glow {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.15); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home__streak-icon,
-  .home__streak-icon::before { animation: none; }
-}
-
-/* --- Tablet: 2-col grid between 640 and 1024 --- */
-@media (min-width: 640px) and (max-width: 1099px) {
-  .home__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-/* --- Small phones: tighter card padding --- */
-@media (max-width: 380px) {
+/* ---------- Responsive Mobile Adjustments ---------- */
+@media (max-width: 480px) {
+  .home__total { padding: 22px 20px; margin-bottom: 20px; }
+  .home__total-value { font-size: 30px; }
   .home__active { padding: 16px; }
   .home__month { padding: 16px; }
   .home__streak { padding: 12px 14px; gap: 10px; }
   .home__streak-icon { width: 38px; height: 38px; }
+  .home__past-years { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .home__past-card { padding: 10px; gap: 8px; }
+  .home__past-icon { width: 26px; height: 26px; }
+  .home__past-amount { font-size: 13px; }
 }
 
-/* --- Prevent big numbers from overflowing --- */
-.home__total-value,
-.home__active-saved,
-.home__month-amount,
-.gd__hero-saved {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* ---------- Time-aware header ---------- */
-
-.hdr__subtitle {
-  display: inline-block;
-  font-variant-numeric: tabular-nums;
-}
-
+/* Mobile Tweaks for Home Cards */
 @media (max-width: 480px) {
-  .hdr__title { font-size: 20px; line-height: 1.2; }
-  .hdr__subtitle { font-size: 12px; color: var(--color-muted); }
+  .home__total { padding: 20px; border-radius: 20px; }
+  .home__total-value { font-size: 32px; }
+  .home__active { padding: 16px; border-radius: 16px; }
+  .home__month { padding: 16px; border-radius: 16px; }
+  .home__streak { padding: 12px; gap: 10px; border-radius: 16px; }
+  .home__past-years { grid-template-columns: 1fr 1fr; }
 }

@@ -252,3 +252,16 @@ select.prof__input { cursor: pointer; }
   .prof__data-btn strong { font-size: 12px; }
   .prof__data-btn em { font-size: 10px; }
 }
+
+/* Mobile Tweaks for Themes Grid */
+@media (max-width: 480px) {
+  .prof__themes {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .prof__data-btn {
+    padding: 12px;
+  }
+  .prof__data-btn strong { font-size: 13px; }
+  .prof__data-btn em { font-size: 11px; }
+}

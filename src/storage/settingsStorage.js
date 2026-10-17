@@ -5,9 +5,11 @@ const DEFAULTS = {
   currency: 'KSh',
   theme: 'system',
   activeGoalId: null,
-  monthlyTarget: 20000,
+  yearlyTargets: {}, // e.g. { "2026": 80000, "2027": 100000 }
   monthlyIncome: 0,
   streakTokens: 3,
+  privacyMode: 'dots',
+  balanceHidden: true,
 }
 
 export async function getSetting(key) {
