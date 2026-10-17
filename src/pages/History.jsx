@@ -8,16 +8,9 @@ import DatePicker from '../components/DatePicker'
 import { useGoals } from '../hooks/useGoals'
 import { useSavings } from '../hooks/useSavings'
 import { getSetting } from '../storage/settingsStorage'
-import { formatCurrency, parseAmount } from '../utils/currency'
+import { formatCurrency, parseAmount, formatThousands } from '../utils/currency'
 import { formatDayMonth, formatLongDate, todayISO } from '../utils/dateUtils'
 import './History.css'
-
-function formatThousands(raw) {
-  if (!raw) return ''
-  const [int, dec] = String(raw).replace(/,/g, '').split('.')
-  const withCommas = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return dec !== undefined ? `${withCommas}.${dec}` : withCommas
-}
 
 export default function History() {
   const { goals } = useGoals()
@@ -30,7 +23,6 @@ export default function History() {
   const [pendingDelete, setPendingDelete] = useState(null)
   const [deleting, setDeleting] = useState(false)
 
-  // Edit form state
   const [editAmount, setEditAmount] = useState('')
   const [editDate, setEditDate] = useState('')
   const [editNote, setEditNote] = useState('')
@@ -120,14 +112,9 @@ export default function History() {
     <>
       <AppHeader
         title="History"
-        subtitle={
-          savings.length
-            ? `${savings.length} contribution${savings.length === 1 ? '' : 's'}`
-            : 'No contributions yet'
-        }
+        subtitle={savings.length ? `${savings.length} contribution${savings.length === 1 ? '' : 's'}` : 'No contributions yet'}
       />
 
-      {/* ---------- Controls ---------- */}
       {savings.length > 0 && (
         <div className="hist__controls">
           <div className="hist__search">
@@ -139,12 +126,7 @@ export default function History() {
               onChange={(e) => setQuery(e.target.value)}
             />
             {query && (
-              <button
-                type="button"
-                className="hist__search-clear"
-                onClick={() => setQuery('')}
-                aria-label="Clear search"
-              >
+              <button type="button" className="hist__search-clear" onClick={() => setQuery('')} aria-label="Clear search">
                 <X size={14} />
               </button>
             )}
@@ -152,10 +134,7 @@ export default function History() {
 
           <div className="hist__filter">
             <Filter size={14} />
-            <select
-              value={filterGoalId}
-              onChange={(e) => setFilterGoalId(e.target.value)}
-            >
+            <select value={filterGoalId} onChange={(e) => setFilterGoalId(e.target.value)}>
               <option value="all">All goals</option>
               {goals.map((g) => (
                 <option key={g.id} value={g.id}>{g.name}</option>
@@ -171,7 +150,6 @@ export default function History() {
         </p>
       )}
 
-      {/* ---------- List ---------- */}
       {loading ? (
         <p className="hist__loading">Loading…</p>
       ) : savings.length === 0 ? (
@@ -192,9 +170,7 @@ export default function History() {
             <div key={group.date} className="hist__group">
               <div className="hist__group-head">
                 <span className="hist__group-date">{formatDayMonth(group.date)}</span>
-                <span className="hist__group-total">
-                  +{formatCurrency(group.total, currency)}
-                </span>
+                <span className="hist__group-total">+{formatCurrency(group.total, currency)}</span>
               </div>
 
               {group.items.map((s) => {
@@ -202,33 +178,17 @@ export default function History() {
                 return (
                   <div key={s.id} className="hist__row">
                     <div className="hist__row-main">
-                      <p className="hist__row-goal">
-                        {goal?.name || 'Deleted goal'}
-                      </p>
+                      <p className="hist__row-goal">{goal?.name || 'Deleted goal'}</p>
                       {s.note && <p className="hist__row-note">{s.note}</p>}
                     </div>
 
-                    <span className="hist__row-amount">
-                      +{formatCurrency(s.amount, currency)}
-                    </span>
+                    <span className="hist__row-amount">+{formatCurrency(s.amount, currency)}</span>
 
                     <div className="hist__row-actions">
-                      <button
-                        type="button"
-                        className="hist__icon-btn"
-                        onClick={() => openEdit(s)}
-                        aria-label="Edit"
-                        title="Edit"
-                      >
+                      <button type="button" className="hist__icon-btn" onClick={() => openEdit(s)} aria-label="Edit" title="Edit">
                         <Pencil size={14} />
                       </button>
-                      <button
-                        type="button"
-                        className="hist__icon-btn hist__icon-btn--danger"
-                        onClick={() => setPendingDelete(s)}
-                        aria-label="Delete"
-                        title="Delete"
-                      >
+                      <button type="button" className="hist__icon-btn hist__icon-btn--danger" onClick={() => setPendingDelete(s)} aria-label="Delete" title="Delete">
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -240,22 +200,14 @@ export default function History() {
         </div>
       )}
 
-      {/* ---------- Edit modal ---------- */}
       <Modal
         open={!!editing}
         onClose={() => setEditing(null)}
         title="Edit contribution"
         footer={
           <>
-            <button
-              className="btn btn--ghost"
-              onClick={() => setEditing(null)}
-            >
-              Cancel
-            </button>
-            <button className="btn btn--primary" onClick={handleEditSave}>
-              Save changes
-            </button>
+            <button className="btn btn--ghost" onClick={() => setEditing(null)}>Cancel</button>
+            <button className="btn btn--primary" onClick={handleEditSave}>Save changes</button>
           </>
         }
       >
@@ -271,14 +223,8 @@ export default function History() {
             }}
           />
 
-          <label className="hist__edit-label" style={{ marginTop: 12 }}>
-            DATE
-          </label>
-          <DatePicker
-            value={editDate}
-            onChange={setEditDate}
-            max={todayISO()}
-          />
+          <label className="hist__edit-label" style={{ marginTop: 12 }}>DATE</label>
+          <DatePicker value={editDate} onChange={setEditDate} max={todayISO()} />
 
           <label className="hist__edit-label" style={{ marginTop: 12 }}>
             NOTE <span className="hist__edit-opt">(optional)</span>
@@ -294,17 +240,12 @@ export default function History() {
         </div>
       </Modal>
 
-      {/* ---------- Delete confirm ---------- */}
       <ConfirmDialog
         open={!!pendingDelete}
         onCancel={() => !deleting && setPendingDelete(null)}
         onConfirm={confirmDelete}
         title="Delete this contribution?"
-        message={
-          pendingDelete
-            ? `${formatCurrency(pendingDelete.amount, currency)} recorded on ${formatLongDate(pendingDelete.date)} will be permanently removed.`
-            : ''
-        }
+        message={pendingDelete ? `${formatCurrency(pendingDelete.amount, currency)} recorded on ${formatLongDate(pendingDelete.date)} will be permanently removed.` : ''}
         confirmLabel={deleting ? 'Deleting…' : 'Delete'}
         destructive
       />

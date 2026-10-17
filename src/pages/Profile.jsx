@@ -8,7 +8,7 @@ import AppHeader from '../components/AppHeader'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { getAllSettings, setSetting } from '../storage/settingsStorage'
 import { exportAllData, importAllData, validateImport, deleteAllData } from '../storage/exportImport'
-import { SUPPORTED_CURRENCIES, currencySymbol } from '../utils/currency'
+import { SUPPORTED_CURRENCIES, currencySymbol, formatThousands } from '../utils/currency'
 import { applyTheme } from '../utils/themeApplier'
 import { exportPdfReport } from '../utils/pdfExport'
 import { useGoals } from '../hooks/useGoals'
@@ -63,7 +63,7 @@ export default function Profile() {
     try {
       if (nameDraft.trim()) await setSetting('displayName', nameDraft.trim())
       await setSetting('currency', currencyDraft)
-      const target = Number(monthlyTargetDraft)
+      const target = Number(monthlyTargetDraft.replace(/,/g, ''))
       if (Number.isFinite(target) && target > 0) {
         await setSetting('monthlyTarget', target)
       }
@@ -170,7 +170,7 @@ export default function Profile() {
         <div className="prof__identity">
           <p className="prof__identity-name">{nameDraft || 'Unnamed'}</p>
           <p className="prof__identity-sub">
-            {currencySymbol(currencyDraft)} · Monthly target {Number(monthlyTargetDraft) || 0}
+            {currencySymbol(currencyDraft)} · Monthly target {formatThousands(monthlyTargetDraft)}
           </p>
         </div>
       </section>
@@ -210,12 +210,12 @@ export default function Profile() {
         <input
           className="prof__input"
           inputMode="decimal"
-          value={monthlyTargetDraft}
+          value={formatThousands(monthlyTargetDraft)}
           onChange={(e) => {
             const v = e.target.value.replace(/,/g, '')
             if (/^\d*\.?\d{0,2}$/.test(v)) setMonthlyTargetDraft(v)
           }}
-          placeholder="20000"
+          placeholder="20,000"
         />
       </section>
 

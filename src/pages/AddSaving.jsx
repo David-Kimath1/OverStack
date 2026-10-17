@@ -7,16 +7,9 @@ import DatePicker from '../components/DatePicker'
 import { useGoals } from '../hooks/useGoals'
 import { useSavings } from '../hooks/useSavings'
 import { getSetting } from '../storage/settingsStorage'
-import { formatCurrency, parseAmount } from '../utils/currency'
+import { formatCurrency, parseAmount, formatThousands } from '../utils/currency'
 import { todayISO } from '../utils/dateUtils'
 import './AddSaving.css'
-
-function formatThousands(raw) {
-  if (!raw) return ''
-  const [int, dec] = String(raw).replace(/,/g, '').split('.')
-  const withCommas = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return dec !== undefined ? `${withCommas}.${dec}` : withCommas
-}
 
 export default function AddSaving() {
   const navigate = useNavigate()
@@ -120,7 +113,6 @@ export default function AddSaving() {
       <AppHeader title="Add Saving" subtitle="Record a contribution" />
 
       <form className="addsave" onSubmit={handleSubmit}>
-        {/* ---------- Amount (hero) ---------- */}
         <div className="addsave__amount">
           <label htmlFor="amount" className="addsave__label">AMOUNT</label>
           <div className="addsave__amount-row">
@@ -146,7 +138,6 @@ export default function AddSaving() {
           )}
         </div>
 
-        {/* ---------- Goal picker ---------- */}
         <div className="addsave__field">
           <label className="addsave__label">GOAL</label>
           {goalsLoading ? (
@@ -155,11 +146,7 @@ export default function AddSaving() {
             <div className="addsave__empty">
               <Target size={20} />
               <p>You have no goals yet.</p>
-              <button
-                type="button"
-                className="btn btn--primary"
-                onClick={() => setNewGoalOpen(true)}
-              >
+              <button type="button" className="btn btn--primary" onClick={() => setNewGoalOpen(true)}>
                 <Plus size={16} /> Create a goal
               </button>
             </div>
@@ -177,28 +164,18 @@ export default function AddSaving() {
                   </button>
                 ))}
               </div>
-              <button
-                type="button"
-                className="addsave__newgoal"
-                onClick={() => setNewGoalOpen(true)}
-              >
+              <button type="button" className="addsave__newgoal" onClick={() => setNewGoalOpen(true)}>
                 <Plus size={14} /> New goal
               </button>
             </>
           )}
         </div>
 
-        {/* ---------- Date ---------- */}
         <div className="addsave__field">
           <label className="addsave__label">DATE</label>
-          <DatePicker
-            value={date}
-            onChange={setDate}
-            max={todayISO()}
-          />
+          <DatePicker value={date} onChange={setDate} max={todayISO()} />
         </div>
 
-        {/* ---------- Note ---------- */}
         <div className="addsave__field">
           <label htmlFor="note" className="addsave__label">
             NOTE <span className="addsave__optional">(optional)</span>
@@ -216,68 +193,34 @@ export default function AddSaving() {
 
         {error && <p className="addsave__error">{error}</p>}
 
-        {/* ---------- Actions ---------- */}
         <div className="addsave__actions">
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={() => navigate(-1)}
-            disabled={submitting}
-          >
+          <button type="button" className="btn btn--ghost" onClick={() => navigate(-1)} disabled={submitting}>
             Cancel
           </button>
-          <button
-            type="submit"
-            className="btn btn--primary addsave__submit"
-            disabled={!canSubmit}
-          >
-            {submitting
-              ? 'Saving…'
-              : !amountValid
-                ? 'Enter an amount'
-                : !goalId
-                  ? 'Pick a goal'
-                  : 'Add Saving'}
+          <button type="submit" className="btn btn--primary addsave__submit" disabled={!canSubmit}>
+            {submitting ? 'Saving…' : !amountValid ? 'Enter an amount' : !goalId ? 'Pick a goal' : 'Add Saving'}
           </button>
         </div>
       </form>
 
-      {/* ---------- Success toast ---------- */}
       {success && (
         <div className="addsave__toast" role="status">
-          <div className="addsave__toast-icon">
-            <Check size={18} strokeWidth={3} />
-          </div>
+          <div className="addsave__toast-icon"><Check size={18} strokeWidth={3} /></div>
           <div>
-            <p className="addsave__toast-title">
-              {formatCurrency(success.amount, currency)} saved
-            </p>
+            <p className="addsave__toast-title">{formatCurrency(success.amount, currency)} saved</p>
             <p className="addsave__toast-sub">to {success.goalName}</p>
           </div>
         </div>
       )}
 
-      {/* ---------- New goal modal ---------- */}
       <Modal
         open={newGoalOpen}
         onClose={() => { setNewGoalOpen(false); setNewGoalError(null) }}
         title="New goal"
         footer={
           <>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={() => setNewGoalOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="btn btn--primary"
-              onClick={handleCreateGoal}
-            >
-              Create goal
-            </button>
+            <button type="button" className="btn btn--ghost" onClick={() => setNewGoalOpen(false)}>Cancel</button>
+            <button type="button" className="btn btn--primary" onClick={handleCreateGoal}>Create goal</button>
           </>
         }
       >
@@ -291,9 +234,7 @@ export default function AddSaving() {
             autoFocus
           />
 
-          <label className="addsave__label" style={{ marginTop: 12 }}>
-            TARGET AMOUNT
-          </label>
+          <label className="addsave__label" style={{ marginTop: 12 }}>TARGET AMOUNT</label>
           <input
             className="addsave__input"
             inputMode="decimal"
@@ -308,17 +249,9 @@ export default function AddSaving() {
           <label className="addsave__label" style={{ marginTop: 12 }}>
             TARGET DATE <span className="addsave__optional">(optional)</span>
           </label>
-          <DatePicker
-            value={newGoalTargetDate}
-            onChange={setNewGoalTargetDate}
-            placeholder="No target date"
-          />
+          <DatePicker value={newGoalTargetDate} onChange={setNewGoalTargetDate} placeholder="No target date" />
 
-          {newGoalError && (
-            <p className="addsave__error" style={{ marginTop: 10 }}>
-              {newGoalError}
-            </p>
-          )}
+          {newGoalError && <p className="addsave__error" style={{ marginTop: 10 }}>{newGoalError}</p>}
         </div>
       </Modal>
     </>

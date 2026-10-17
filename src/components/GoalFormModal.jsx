@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react'
 import Modal from './Modal'
 import DatePicker from './DatePicker'
-import './GoalFormModal.css'
-import { parseAmount } from '../utils/currency'
+import { parseAmount, formatThousands } from '../utils/currency'
 import { todayISO } from '../utils/dateUtils'
-
-function formatThousands(raw) {
-  if (!raw) return ''
-  const [int, dec] = String(raw).replace(/,/g, '').split('.')
-  const withCommas = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return dec !== undefined ? `${withCommas}.${dec}` : withCommas
-}
+import './GoalFormModal.css'
 
 export default function GoalFormModal({ open, onClose, onSubmit, initial }) {
   const isEdit = !!initial
@@ -66,9 +59,7 @@ export default function GoalFormModal({ open, onClose, onSubmit, initial }) {
       title={isEdit ? 'Edit goal' : 'New goal'}
       footer={
         <>
-          <button className="btn btn--ghost" onClick={onClose} disabled={saving}>
-            Cancel
-          </button>
+          <button className="btn btn--ghost" onClick={onClose} disabled={saving}>Cancel</button>
           <button className="btn btn--primary" onClick={handleSubmit} disabled={saving}>
             {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create goal'}
           </button>
@@ -86,9 +77,7 @@ export default function GoalFormModal({ open, onClose, onSubmit, initial }) {
           autoFocus
         />
 
-        <label className="goalform__label" style={{ marginTop: 12 }}>
-          TARGET AMOUNT
-        </label>
+        <label className="goalform__label" style={{ marginTop: 12 }}>TARGET AMOUNT</label>
         <input
           className="goalform__input"
           inputMode="decimal"
@@ -111,11 +100,7 @@ export default function GoalFormModal({ open, onClose, onSubmit, initial }) {
         />
 
         {targetDate && (
-          <button
-            type="button"
-            className="goalform__clear"
-            onClick={() => setTargetDate('')}
-          >
+          <button type="button" className="goalform__clear" onClick={() => setTargetDate('')}>
             Clear target date
           </button>
         )}

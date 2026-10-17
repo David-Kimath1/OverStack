@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import { Wallet, Check, X, Pencil } from 'lucide-react'
-import { formatCurrency, parseAmount } from '../utils/currency'
-import { formatMonthOnly } from '../utils/dateUtils'
+import { formatCurrency, parseAmount, formatThousands } from '../utils/currency'
 import './IncomeCard.css'
-
-function formatThousands(raw) {
-  if (!raw) return ''
-  const [int, dec] = String(raw).replace(/,/g, '').split('.')
-  const withCommas = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return dec !== undefined ? `${withCommas}.${dec}` : withCommas
-}
 
 export default function IncomeCard({
   income = 0,
@@ -53,12 +45,7 @@ export default function IncomeCard({
           <Wallet size={13} /> MONTHLY BUDGET
         </p>
         {!editing && (
-          <button
-            type="button"
-            className="inc__edit"
-            onClick={() => setEditing(true)}
-            aria-label="Edit income"
-          >
+          <button type="button" className="inc__edit" onClick={() => setEditing(true)} aria-label="Edit income">
             <Pencil size={12} />
             {hasIncome ? 'Edit income' : 'Set income'}
           </button>
@@ -87,28 +74,16 @@ export default function IncomeCard({
             />
           </div>
           <div className="inc__actions">
-            <button
-              type="button"
-              className="inc__btn inc__btn--ghost"
-              onClick={cancel}
-              disabled={saving}
-            >
+            <button type="button" className="inc__btn inc__btn--ghost" onClick={cancel} disabled={saving}>
               <X size={14} /> Cancel
             </button>
-            <button
-              type="button"
-              className="inc__btn inc__btn--primary"
-              onClick={commit}
-              disabled={saving}
-            >
+            <button type="button" className="inc__btn inc__btn--primary" onClick={commit} disabled={saving}>
               <Check size={14} /> Save
             </button>
           </div>
         </div>
       ) : !hasIncome ? (
-        <p className="inc__empty">
-          Set your monthly income to see how much you can still save.
-        </p>
+        <p className="inc__empty">Set your monthly income to see how much you can still save.</p>
       ) : (
         <>
           <div className="inc__row inc__row--top">
@@ -125,19 +100,12 @@ export default function IncomeCard({
 
           <div className={'inc__row inc__row--remaining' + (overBudget ? ' is-over' : '')}>
             <span className="inc__row-label">Remaining</span>
-            <span className="inc__row-value">
-              {formatCurrency(remaining, currency)}
-            </span>
+            <span className="inc__row-value">{formatCurrency(remaining, currency)}</span>
           </div>
 
-          {/* Visual: saved vs income bar */}
           <div className="inc__bar" aria-hidden="true">
             {targetPctOfIncome > 0 && targetPctOfIncome <= 100 && (
-              <span
-                className="inc__bar-target"
-                style={{ left: `${targetPctOfIncome}%` }}
-                title={`Monthly target: ${formatCurrency(monthlyTarget, currency)}`}
-              />
+              <span className="inc__bar-target" style={{ left: `${targetPctOfIncome}%` }} />
             )}
             <span
               className={'inc__bar-fill' + (overBudget ? ' is-over' : '')}
