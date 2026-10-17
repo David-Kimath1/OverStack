@@ -12,7 +12,6 @@ import { useGoals } from '../hooks/useGoals'
 import { useSavings } from '../hooks/useSavings'
 import { useStreak } from '../hooks/useStreak'
 import { getAllSettings, setSetting } from '../storage/settingsStorage'
-import { seedDemoDataIfEmpty } from '../storage/seed'
 import { exportPdfReport } from '../utils/pdfExport'
 import { sumAll, sumForMonth, splitGoals } from '../utils/savingsCalculations'
 import { formatCurrency } from '../utils/currency'
@@ -105,7 +104,6 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      await seedDemoDataIfEmpty()
       const s = await getAllSettings()
       if (cancelled) return
       setSettings(s)
